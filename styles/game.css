@@ -1,0 +1,13 @@
+﻿body
+{
+    background:#bbb;
+    position:relative;
+    display:block;
+}
+#glCanvas {
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+    position:relative;
+}
