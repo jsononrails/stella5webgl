@@ -1,5 +1,11 @@
 var jewel = {
-	screens: {}
+	screens: {},
+	settings: {
+		rows: 8,
+		cols: 8,
+		baseScore: 100,
+		numJewelTypes: 7
+	}
 };
 
 // wait until main document is loaded
@@ -17,6 +23,7 @@ window.addEventListener("load", function() {
 				"/scripts/thirdparty/sizzle.min.js",
 				"/scripts/jewelwarrior/dom.js",
 				"/scripts/jewelwarrior/game.js",
+				"/scripts/jewelwarrior/board.js"
 			]
 		},
 		{
@@ -24,6 +31,7 @@ window.addEventListener("load", function() {
 			yep: "/scripts/jewelwarrior/screen.splash.js",
 			nope: "/scripts/jewelwarrior/screen.install.js",
 			complete: function() {
+				jewel.game.setup();
 				if(Modernizr.standalone) {
 					jewel.game.showScreen("splash-screen");
 				} else {
