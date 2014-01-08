@@ -1,5 +1,6 @@
 var jewel = {
 	screens: {},
+	images: {},
 	settings: {
 		rows: 8,
 		cols: 8,
@@ -10,6 +11,12 @@ var jewel = {
 
 // wait until main document is loaded
 window.addEventListener("load", function() {
+	
+	// determine jewel size
+	var jewelProto = document.getElementById("jewel-proto"),
+		rect = jewelProto.getBoundingClientRect();
+		
+	jewel.settings.jewelSize = rect.width;
 	
 	Modernizr.addTest("standalone", function() {
 		return (window.navigator.standalone != false);

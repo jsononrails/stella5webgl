@@ -128,3 +128,14 @@ ul.menu li button:active {
 	padding: 0 0.5em;
 }
 
+/* jewels */
+.jewel-size {
+	font-size: 40px;
+}
+
+#jewel-proto {
+	position: absolute;
+	width: 1em;
+	height: 1em;
+	left: -1000px;
+}
