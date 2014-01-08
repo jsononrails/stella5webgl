@@ -28,7 +28,39 @@ window.addEventListener("load", function() {
 		return resource;
 	});
 	
-	// start dynamic loading
+	// tracking loading progress and preloading assets
+	var numPreload = 0,
+		numLoaded = 0;
+	
+	yepnope.addPrefix("loader", function(resource) {
+		// console.log("Loading: " + resource.url);
+		var isImage = /.+\.(jpg|png|gif)$/i.test(resource.url);
+		resource.noexec = isImage;
+		
+		numPreload++;
+		
+		resource.autoCallback = function(e) {
+			// console.log("Finished loading: " + resource.url);
+			numLoaded++;
+			if(isImage) {
+				var image = new Image();
+				image.src = resource.url;
+				jewel.images[resource.url] = image;
+			}
+		};
+		return resource;
+	});
+	
+	// current loader progress
+	function getLoadProgress() {
+		if(numLoaded >0) {
+			return numLoaded / numPreload;
+		} else {
+			return 0;
+		}
+	}
+	
+	// loading stage 1
 	Modernizr.load([
 		{
 			// these files are always loaded
@@ -36,7 +68,6 @@ window.addEventListener("load", function() {
 				"/scripts/thirdparty/sizzle.min.js",
 				"/scripts/jewelwarrior/dom.js",
 				"/scripts/jewelwarrior/game.js",
-				"/scripts/jewelwarrior/board.js"
 			]
 		},
 		{
@@ -46,7 +77,7 @@ window.addEventListener("load", function() {
 			complete: function() {
 				jewel.game.setup();
 				if(Modernizr.standalone) {
-					jewel.game.showScreen("splash-screen");
+					jewel.game.showScreen("splash-screen", getLoadProgress);
 				} else {
 					jewel.game.showScreen("install-screen");
 				}
@@ -58,13 +89,18 @@ window.addEventListener("load", function() {
 	if(Modernizr.standalone) {
 		Modernizr.load([
 			{
-				load: ["/scripts/jewelwarrior/screen.main-menu.js"]
+				load: [
+					"loader!/scripts/jewelwarrior/screen.main-menu.js",
+					"loader!/jewelwarrior/images/jewels" + jewel.settings.jewelSize + ".png"
+				]
 			},
 			{
 				test: Modernizr.webworkers,
-				yep: ["/scripts/jewelwarrior/board.worker-interface.js",
-					 "preload!/scripts/jewelwarrior/board.worker.js"],
-				nope: "/scripts/jewelwarrior/board.js"
+				yep: [
+					"loader!/scripts/jewelwarrior/board.worker-interface.js",
+					"preload!/scripts/jewelwarrior/board.worker.js"
+					],
+				nope: "loader!/scripts/jewelwarrior/board.js"
 			}
 		]);
 	}
