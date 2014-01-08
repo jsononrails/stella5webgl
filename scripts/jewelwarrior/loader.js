@@ -15,6 +15,12 @@ window.addEventListener("load", function() {
 		return (window.navigator.standalone != false);
 	});
 	
+	// extend yepnope with preloading
+	yepnope.addPrefix("preload", function(resource) {
+		resource.noexec = true;
+		return resource;
+	});
+	
 	// start dynamic loading
 	Modernizr.load([
 		{
@@ -44,9 +50,15 @@ window.addEventListener("load", function() {
 	// loading stage 2
 	if(Modernizr.standalone) {
 		Modernizr.load([
-				{
-					load: ["/scripts/jewelwarrior/screen.main-menu.js"]
-				}
-			]);
+			{
+				load: ["/scripts/jewelwarrior/screen.main-menu.js"]
+			},
+			{
+				test: Modernizr.webworkers,
+				yep: ["/scripts/jewelwarrior/board.worker-interface.js",
+					 "preload!/scripts/jewelwarrior/board.worker.js"],
+				nope: "/scripts/jewelwarrior/board.js"
+			}
+		]);
 	}
 }, false);
