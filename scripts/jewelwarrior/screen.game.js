@@ -41,6 +41,7 @@ jewel.screens["game-screen"] = (function() {
 		cursor.x = x;
 		cursor.y = y;
 		cursor.selected = select;
+		display.setCursor(x, y, select);
 	}
 	
 	// handle jewel selection
@@ -104,7 +105,7 @@ jewel.screens["game-screen"] = (function() {
 			x+= cursor.x;
 			y+= cursor.y;
 			
-			if(x>0 && x< selected.cols && y >=0 && y<settings.rows) {
+			if(x>0 && x< settings.cols && y >=0 && y<settings.rows) {
 				selectJewel(x, y);
 			}
 		} else {

@@ -41,9 +41,9 @@ jewel.input = (function() {
 		dom.bind(document, "keydown", function(event) {
 			var keyName = keys[event.keyCode];
 			
-			if(keyName && settings.control[keyName]) {
+			if(keyName && settings.controls[keyName]) {
 				event.preventDefault();
-				trigger(settings.control[keyName]);
+				trigger(settings.controls[keyName]);
 			}
 		});
 	}
