@@ -89,20 +89,20 @@ window.addEventListener("load", function() {
 	if(Modernizr.standalone) {
 		Modernizr.load([
 			{
-				load: [
-				    "loader!/scripts/jewelwarrior/display.canvas.js",
-					"loader!/scripts/jewelwarrior/screen.main-menu.js",
-					"loader!/scripts/jewelwarrior/screen.game.js",
-					"loader!/jewelwarrior/images/jewels" + jewel.settings.jewelSize + ".png"
-				]
-			},
-			{
 				test: Modernizr.webworkers,
 				yep: [
 					"loader!/scripts/jewelwarrior/board.worker-interface.js",
 					"preload!/scripts/jewelwarrior/board.worker.js"
 					],
 				nope: "loader!/scripts/jewelwarrior/board.js"
+			},
+			{
+				load: [
+				    "loader!/scripts/jewelwarrior/display.canvas.js",
+					"loader!/scripts/jewelwarrior/screen.main-menu.js",
+					"loader!/scripts/jewelwarrior/screen.game.js",
+					"loader!/jewelwarrior/images/jewels" + jewel.settings.jewelSize + ".png"
+				]
 			}
 		]);
 	}
