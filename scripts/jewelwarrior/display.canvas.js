@@ -1,5 +1,6 @@
 jewel.display = (function() {
-	var dom = jewel.dom,
+	var jewels,
+		dom = jewel.dom,
 		$ = dom.$,
 		canvas, ctx,
 		cols, rows,
@@ -23,6 +24,30 @@ jewel.display = (function() {
 		
 		boardElement.appendChild(createBackground());
 		boardElement.appendChild(canvas);
+	}
+	
+	function drawJewel(type, x, y) {
+		var image = jewel.images["/jewelwarrior/images/jewels" + jewelSize + ".png"];
+
+		ctx.drawImage(image, 
+			type * jewelSize, 0, jewelSize, jewelSize, 
+			x * jewelSize, y * jewelSize, 
+			jewelSize, jewelSize
+		);
+	}
+	
+	function redraw(newJewels, callback) {
+		var x, y;
+		
+		jewels = newJewels;
+		
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for(x=0; x<cols; x++) {
+			for(y=0; y<rows; y++) {
+				drawJewel(jewels[x][y], x, y);
+			}
+		}
+		callback();
 	}
 	
 	function createBackground() {
@@ -57,6 +82,7 @@ jewel.display = (function() {
 	}
 	
 	return {
-		initialize: initialize
+		initialize: initialize,
+		redraw: redraw
 	};
 })();
