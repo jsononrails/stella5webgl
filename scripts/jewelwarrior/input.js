@@ -34,7 +34,7 @@ jewel.input = (function() {
 		
 		// touch
 		dom.bind(board, "touchstart", function(event) {
-			handleClick(event, "TOUCH", event);
+			handleClick(event, "TOUCH", event.targetTouches[0]);
 		});
 		
 		// keys
