@@ -108,6 +108,7 @@ window.addEventListener("load", function() {
 			},
 			{
 				load: [
+					"loader!/scripts/jewelwarrior/input.js",
 				    "loader!/scripts/jewelwarrior/display.canvas.js",
 					"loader!/scripts/jewelwarrior/screen.main-menu.js",
 					"loader!/scripts/jewelwarrior/screen.game.js",

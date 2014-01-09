@@ -17,8 +17,8 @@ jewel.input = (function() {
 		67: "KEY_C",
 		
 		// alpha keys 68-87
-		88: "KEY_X"
-		89: "KEY_Y",
+		88: "KEY_X",
+		89: "KEY_Y"
 		
 	};
 		
@@ -77,15 +77,26 @@ jewel.input = (function() {
 	}
 	
 	function bind(action, handler) {
-		// bind a handler function to a game action
+		if(!inputHandlers[action]) {
+			inputHandlers[action] = [];
+		}
+		inputHandlers[action].push(handler);
 	}
 	
 	function trigger(action) {
-		// trigger a game action
+		var handlers = inputHandlers[action],
+			args = Array.prototype.slice.call(arguments, 1);
+		
+		if(handlers) {
+			for(var i=0; i<handlers.length; i++) {
+				handlers[i].apply(null, args);
+			}
+		}
 	}
 	
 	return {
-		initialize: initialize
+		initialize: initialize,
+		bind: bind
 	};
 	
 })();
