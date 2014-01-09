@@ -90,7 +90,9 @@ window.addEventListener("load", function() {
 		Modernizr.load([
 			{
 				load: [
+				    "loader!/scripts/jewelwarrior/display.canvas.js",
 					"loader!/scripts/jewelwarrior/screen.main-menu.js",
+					"loader!/scripts/jewelwarrior/screen.game.js",
 					"loader!/jewelwarrior/images/jewels" + jewel.settings.jewelSize + ".png"
 				]
 			},
