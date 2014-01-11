@@ -77,6 +77,7 @@ window.addEventListener("load", function() {
 			load: [
 				"/scripts/thirdparty/sizzle.min.js",
 				"/scripts/jewelwarrior/dom.js",
+				"/scripts/jewelwarrior/requestAnimationFrame.js",
 				"/scripts/jewelwarrior/game.js",
 			]
 		},
