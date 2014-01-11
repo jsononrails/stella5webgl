@@ -209,16 +209,15 @@ jewel.board = (function() {
 		}
 	}
 	
-	// create a copy of the jewel board
-	function getBoard() {
-		var copy = [],
-			x;
-			
-		for(x=0; x<cols; x++) {
-			copy[x] = jewels[x].slice(0);
-		}
-		return copy;
-	}
+	// creates a copy of the jewel board
+    function getBoard() {
+        var copy = [],
+            x;
+        for (x = 0; x < cols; x++) {
+            copy[x] = jewels[x].slice(0);
+        }
+        return copy;
+    }
 	
 	// returns true if at least one match can be made
 	function hasMoves() {

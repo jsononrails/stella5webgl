@@ -179,6 +179,8 @@ ul.menu li button:active {
 	position: relative;
 	width: 8em;
 	height: 8em;
+	
+	-webkit-perspective: 16em;
 }
 
 #game-screen .game-board .board-bg,
