@@ -197,3 +197,30 @@ ul.menu li button:active {
 #game-screen .game-board .board-bg {
 	z-index: 0;
 }
+
+/* game state */
+#game-screen .game-info {
+	width: 100%;
+	float: left;
+}
+
+#game-screen .game-info label {
+	display: inline-block;
+	height: 1.5em;
+	float: left;
+	font-size: 0.6em;
+	padding: 0.25em;
+}
+
+#game-screen .game-info .score {
+	float:right;
+}
+
+#game-screen .time {
+	height: 0.25em;
+	border-radius: 0.05em;
+}
+
+#game-screen .time .indicator {
+	width: 100%;
+}
