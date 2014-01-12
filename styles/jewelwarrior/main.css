@@ -240,3 +240,75 @@ ul.menu li button:active {
 	background-color : rgb(200,200,100);
 }
 
+/* Game screen - Announcement */
+#game-screen .announcement {
+    position : absolute;
+    left: 0;
+    top : 50%;
+    margin-top : -0.5em;
+    width : 100%;
+
+    font-family : Slackey, sans-serif;
+    color : rgb(150,150,75);
+    text-shadow : 0.03em 0.03em 0.03em rgb(255,255,0),
+                 -0.03em -0.03em 0.03em rgb(255,255,0),
+                  0.1em 0.15em 0.15em rgb(0,0,0);
+    text-align : center;
+    white-space : nowrap;
+
+    z-index : 20; /* in front of everything else */
+    opacity : 0; /* start out transparent */
+    cursor : default;
+}
+
+.no-textshadow  #game-screen .announcement {
+    filter: glow(color=#ffff00,strength=1),
+            dropshadow(color=#000000,offX=3,offY=3);
+}
+
+/* Announcement animation */
+/* Keyframes for webkit */
+@-webkit-keyframes zoomfade {
+    0% {
+        opacity : 1;
+        -webkit-transform : scale(0.5);
+    }
+    25% { /* stay at full opacity for a bit */
+        opacity : 1;
+    }
+    100% { /* and then fade to 0 */
+        opacity : 0;
+        -webkit-transform : scale(1.5);
+    }
+}
+/* Keyframes for webkit */
+@-moz-keyframes zoomfade {
+    0% {
+        opacity : 1;
+        -moz-transform : scale(0.5);
+    }
+    25% { /* stay at full opacity for a bit */
+        opacity : 1;
+    }
+    100% { /* and then fade to 0 */
+        opacity : 0;
+        -moz-transform : scale(1.5);
+    }
+}
+/* zoom-fade animation class */
+.zoomfade {
+    -webkit-animation-name : zoomfade;
+    -webkit-animation-duration : 2s;
+    -moz-animation-name : zoomfade;
+    -moz-animation-duration : 2s;
+}
+
+/* Fallback for browsers without CSS animations */
+.no-cssanimations #game-screen .announcement {
+    display : none;
+}
+.no-cssanimations #game-screen .announcement.active {
+    opacity : 1;
+    display : block;
+}
+

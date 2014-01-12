@@ -36,12 +36,43 @@ jewel.screens["game-screen"] = (function() {
 		};
 		
 		updateGameInfo();
-		setLevelTimer(true);
+		
 		board.initialize(function() {
 			display.initialize(function() {
-				display.redraw(board.getBoard(), function() {});
+				display.redraw(board.getBoard(), function() {
+					advanceLevel();
+				});
 			});
 		});
+	}
+	
+	function advanceLevel() {
+		gameState.level++;
+		announce("Level " + gameState.level);
+		updateGameInfo();
+		gameState.startTime = Date.now();
+		gameState.endTime = settings.baseLevelTimer *
+			Math.pow(gameState.level, -0.05 * gameState.level);
+		
+		setLevelTimer(true);		
+		display.levelUp();
+	}
+	
+	function announce(str) {
+		var element = $("#game-screen .announcement")[0];
+		element.innerHTML = str;
+		
+		if(Modernizr.cssanimations) {
+			dom.removeClass(element, "zoomfade");
+			setTimeout(function() {
+				dom.addClass(element,"zoomfade");
+			}, 1);
+		} else {
+			dom.addClass(element, "active");
+			setTimeout(function() {
+				dom.removeClass(element, "active");
+			}, 1000);
+		}
 	}
 	
 	function updateGameInfo() {
@@ -119,6 +150,20 @@ jewel.screens["game-screen"] = (function() {
 		}
 	}
 	
+	function addScore(points) {
+		
+		var nextLevelAt = Math.pow(settings.baseLevelScore,
+			Math.pow(settings.baseLevelExp, gameState.level -1));
+		
+		gameState.score += points;
+		
+		if(gameState.score >= nextLevelAt) {
+			advanceLevel();
+		}
+		
+		updateGameInfo();
+	}
+	
 	function playBoardEvents(events) {
 		if(events.length >0) {
 			var boardEvent = events.shift(),
@@ -134,7 +179,12 @@ jewel.screens["game-screen"] = (function() {
 					display.removeJewels(boardEvent.data, next);
 					break;
 				case "refill":
+					announc("No moves!");
 					display.refill(boardEvent.data, next);
+					break;
+				case "score":
+					addScore(boardEvent.data);
+					next();
 					break;
 				default:
 					next();
@@ -160,6 +210,12 @@ jewel.screens["game-screen"] = (function() {
 			y = (cursor.y + y + settings.rows) % settings.rows;
 			setCursor(x, y, false);
 		}
+	}
+	
+	function gameOver() {
+		display.gameOver(function() {
+			announce("Game over");
+		});
 	}
 	
 	function moveUp() {
