@@ -10,6 +10,7 @@
     }
 }
 
+
 /* use a bigger base size for tablets */
 @media (min-device-width: 768px) {
     #game {
@@ -25,41 +26,6 @@
 
 /* smartphones landscape */
 @media (orientation: landscape) {
-	
-	#game-screen .game-board {
-		float: left;
-	}
-	
-	#game-screen .game-info {
-		width: auto;
-		height: 2em;
-		white-space: nowrap;
-	}
-	
-	#game-screen .game-info label {
-		font-size: 0.5em;
-	}
-	
-	#game-screen .game-info .score {
-		float: left;
-		clear:both;
-	}
-	
-	#game-screen .time {
-		font-size : 0.5em;
-		margin: 0;
-		float: left;
-		width; 6.5em;
-		
-		/* vendor specific */
-		-webkit-transform: rotate(-90deg) translate(-3em,-1.75em);
-		-moz-transform: rotate(-90deg) translate(-3em,-1.75em);
-		-ms-transform: rotate(-90deg) translate(-3em,-1.75em);
-		
-		/* standard transform*/
-		transform: rotate(-90deg) translate(-3em,-1.75em);
-	}
-	
     #splash-screen,
     #main-menu {
         font-size : 1.0em;
@@ -99,5 +65,44 @@
     }
     .jewel-size {
         font-size : 64px;
+    }
+}
+
+
+@media (orientation: landscape) {
+    #game-screen .game-board {
+        float : left;
+    }
+    
+    #game-screen .game-info {
+        width : auto;
+        height : 2em;
+        white-space : nowrap;
+    }
+
+    #game-screen .game-info label {
+        font-size : 0.5em;
+    }
+
+    #game-screen .game-info .score {
+        float : left;
+        clear : both;
+    }
+
+    #game-screen .time {
+        font-size : 0.5em;
+        margin : 0;
+        float : left;
+        width : 6.5em;
+        /* vendor specific transforms */
+        -webkit-transform : rotate(-90deg)
+                            translate(-3em, -1.75em);
+        -moz-transform : rotate(-90deg)
+                            translate(-3em, -1.75em);
+        -ms-transform : rotate(-90deg)
+                            translate(-3em, -1.75em);
+        /* standard transform */
+        transform : rotate(-90deg)
+                            translate(-3em, -1.75em);
     }
 }
