@@ -13,7 +13,17 @@ jewel.display = (function() {
 		geometry,
 		aVertex, aNormal,
 		uScale, uColor;
-		
+	
+	var colors = [
+		[0.1, 0.8, 0.1],
+		[0.9, 0.1, 0.1],
+		[0.9, 0.3, 0.8],
+		[0.8, 1.0, 1.0],
+		[0.2, 0.4, 1.0],
+		[1.0, 0.4, 0.1],
+		[1.0, 0.9, 0.1]
+	];
+	
 	function initialize(callback) {
 		if(firstRun) {
 			setup();
@@ -27,24 +37,34 @@ jewel.display = (function() {
 	function setup() {
 		var boardElements = $("#game-screen .game-board")[0];
 		
-		cols = jewels.settings.cols;
-		rows = jewels.settings.rows;
+		cols = jewel.settings.cols;
+		rows = jewel.settings.rows;
 		jewels = [];
 		
 		canvas = document.createElement("canvas");
-		gl = canvas.getContex("experimental-webgl");
+		gl = webgl.setupGL(canvas);
 		dom.addClass(canvas, "board");
-		canvas.width = cols * jewels.settings.jewelSize;
-		canvas.height = rows * jewels.settings.jewelSize;
+		canvas.width = cols * jewel.settings.jewelSize;
+		canvas.height = rows * jewel.settings.jewelSize;
 		
 		boardElements.appendChild(canvas);
 		setupGL();
 	}
 	
+	function cycle(time) {
+		renderAnimations(time, previousCycle);
+		if(geometry) {
+			draw();
+		}
+		
+		previousCycle = time;
+		requestAnimationFrame(cycle);
+	}
+	
 	function setCursor(x, y, selected) {
 		cursor = null;
 		if(arguments.length >0) {
-			curstor = {
+			cursor = {
 				x: x,
 				y: y,
 				selected: selected
@@ -84,11 +104,29 @@ jewel.display = (function() {
 			geometry = geom;
 		});
 		
-		webgl.setProjection(g, program, 60, cols/rows, 0.1, 100);
+		webgl.setProjection(gl, program, 60, cols/rows, 0.1, 100);
 	}
 	
 	function levelUp() {}
 	function gameOver() {}
+	
+	function draw() {
+	        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	        gl.viewport(0, 0, canvas.width, canvas.height);
+
+	        gl.bindBuffer(gl.ARRAY_BUFFER, geometry.vbo);
+	        gl.vertexAttribPointer(
+	            aVertex, 3, gl.FLOAT, false, 0, 0);
+
+	        gl.bindBuffer(gl.ARRAY_BUFFER, geometry.nbo);
+	        gl.vertexAttribPointer(
+	            aNormal, 3, gl.FLOAT, false, 0, 0);
+
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, geometry.ibo);
+
+	        jewels.forEach(drawJewel);
+	    }
+	
 	
 	function redraw(newJewels, callback) {
 		var x, y,
@@ -106,6 +144,119 @@ jewel.display = (function() {
 			}
 		}
 		callback();
+	}
+	
+	function drawJewel(jewel) {
+	        var x = jewel.x - cols / 2 + 0.5,  // make position
+	            y = -jewel.y + rows / 2 - 0.5, // relative to center
+	            scale = jewel.scale,
+	            n = geometry.num;
+
+	        var mv = webgl.setModelView(gl, program,
+	            [x * 4.4, y * 4.4, -32], // scale and move back
+	            Date.now() / 1500 + jewel.rnd * 100, // rotate
+	            [0, 1, 0.1] // rotation axis
+	        );
+	        webgl.setNormalMatrix(gl, program, mv);
+
+	        // add effect for selected jewel
+	        if (cursor && jewel.x == cursor.x && jewel.y == cursor.y) {
+	            scale *= 1.0 + Math.sin(Date.now() / 100) * 0.1
+	        }
+
+	        gl.uniform1f(uScale, scale);
+	        gl.uniform3fv(uColor, colors[jewel.type]);
+
+	        gl.cullFace(gl.FRONT);
+	        gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_SHORT, 0);
+
+	        gl.cullFace(gl.BACK);
+	        gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_SHORT, 0);
+	    }
+	
+	
+	function setupShaders() {
+			var vsource = 
+			"attribute vec3 aVertex;\r\n" +
+			"attribute vec3 aNormal;\r\n" +
+
+			"uniform mat4 uModelView;\r\n" +
+			"uniform mat4 uProjection;\r\n" +
+			"uniform mat3 uNormalMatrix;\r\n" +
+			"uniform vec3 uLightPosition;\r\n" +
+
+			"uniform float uScale;\r\n" +
+
+			"varying float vDiffuse;\r\n" +
+			"varying float vSpecular;\r\n" +
+			"varying vec4 vPosition;\r\n" +
+			"varying vec3 vNormal;\r\n" +
+
+			"void main(void) {\r\n" +
+			"	vPosition = uModelView * vec4(aVertex * uScale, 1.0);\r\n" +
+			"	vNormal = normalize(aVertex);\r\n" +
+
+			"	vec3 normal = normalize(uNormalMatrix * aNormal);\r\n" +
+			"	vec3 lightDir = uLightPosition - vPosition.xyz;\r\n" +
+			"	lightDir = normalize(lightDir);\r\n" +
+
+			"	vDiffuse = max(dot(normal, lightDir), 0.0);\r\n" +
+
+			"	vec3 viewDir = normalize(vPosition.xyz);\r\n" +
+			"	vec3 reflectDir = reflect(lightDir, normal);\r\n" +
+			"	float specular = dot(reflectDir, viewDir);\r\n" +
+			"	vSpecular = pow(specular, 16.0);\r\n" +
+
+			"	gl_Position = uProjection * vPosition;\r\n" +
+			"}"
+			;
+
+			var fsource = 
+			"#ifdef GL_ES\r\n" +
+			"precision mediump float;\r\n" + 
+			"#endif\r\n" +
+
+			"uniform sampler2D uTexture;\r\n" +
+			"uniform float uAmbient;\r\n" +
+			"uniform vec3 uColor;\r\n" +
+
+			"varying float vDiffuse;\r\n" +
+			"varying float vSpecular;\r\n" +
+			"varying vec3 vNormal;\r\n" +
+
+			"void main(void) {\r\n" +
+			"	float theta = acos(vNormal.y) / 3.14159;" +
+			"	float phi = atan(vNormal.z, vNormal.x) / (2.0 * 3.14159);" +
+			"	vec2 texCoord = vec2(-phi, theta);" +
+
+			"	float texColor = texture2D(uTexture, texCoord).r;\r\n" +
+
+			"	float light = uAmbient + vDiffuse + vSpecular + texColor;\r\n" +
+
+			"	gl_FragColor = vec4(uColor * light, 0.7);\r\n" +
+			"}\r\n"
+			;
+
+			var vshader = webgl.createShaderObject(gl, gl.VERTEX_SHADER, vsource),
+				fshader = webgl.createShaderObject(gl, gl.FRAGMENT_SHADER, fsource);
+
+			return webgl.createProgramObject(gl, vshader, fshader);
+		}
+	
+	function setupTexture() {
+		var image = new Image();
+		image.addEventListener("load", function() {
+			var texture = webgl.createTextureObject(gl, image);
+			gl.uniform1i(
+				gl.getUniformLocation(program, "uTexture"),
+				"uTexture", 0
+			);
+			
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, texture);
+		}, false);
+		
+		image.src = "/jewelwarrior/images/jewelpattern.jpg";
 	}
 	
 	function moveJewels() {}

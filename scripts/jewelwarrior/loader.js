@@ -128,7 +128,7 @@ window.addEventListener("load", function() {
 						"loader!/scripts/jewelwarrior/webgl.js",
 						"loader!/scripts/thirdparty/debug.js",
 						"loader!/scripts/jewelwarrior/display.webgl.js",
-						"loader!/scripts/thirdparty/glMatrix.min.js"
+						"loader!/scripts/thirdparty/glMatrix.min.js",
 						"loader!/jewelwarrior/images/jewelpattern.jpg"
 				]
 			},

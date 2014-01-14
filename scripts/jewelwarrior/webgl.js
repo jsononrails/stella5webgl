@@ -1,5 +1,30 @@
 jewel.webgl = (function() {
 	
+	function setupGL(canvas) {
+
+	    var names = ["webgl", "experimental-webgl"];
+	    var context = null;
+
+	    for (var i = 0; i < names.length; i++) {
+	        try {
+	            context = canvas.getContext(names[i]);
+	        } catch (e) { }
+
+	        if (context) {
+	            break;
+	        }
+	    }
+
+	    if (context) {
+	        context.viewportWidth = canvas.width;
+	        context.viewportHeight = canvas.height;
+	    } else {
+	        alert("Failed to create a WebGL Context");
+	    }
+		console.log(context);
+		return context;
+	}
+	
 	function createFloatBuffer(gl, data) {
 		var buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -161,7 +186,8 @@ jewel.webgl = (function() {
 		setModelView : setModelView,
 		setProjection : setProjection,
 		setNormalMatrix : setNormalMatrix,
-		loadModel : loadModel
+		loadModel : loadModel,
+		setupGL: setupGL
 	}
 	
 })();
