@@ -35,6 +35,18 @@ window.addEventListener("load", function() {
 		return (window.navigator.standalone != false);
 	});
 	
+	// test for webgl support
+	Modernizr.addTest("webgl2", function() {
+		try {
+			var canvas = document.createElement("canvas"),
+			ctx = canvas.getContext("experimental-webgl");
+			
+			return !!ctx;
+		} catch(e) {
+			return false;
+		};
+	});
+	
 	// extend yepnope with preloading
 	yepnope.addPrefix("preload", function(resource) {
 		resource.noexec = true;
@@ -111,9 +123,22 @@ window.addEventListener("load", function() {
 				nope: "loader!/scripts/jewelwarrior/board.js"
 			},
 			{
+				test: Modernizr.webgl2,
+				yep: [
+						"loader!/scripts/jewelwarrior/webgl.js",
+						"loader!/scripts/thirdparty/debug.js",
+						"loader!/scripts/jewelwarrior/display.webgl.js",
+						"loader!/scripts/thirdparty/glMatrix.min.js"
+						"loader!/jewelwarrior/images/jewelpattern.jpg"
+				]
+			},
+			{
+				test: Modernizr.canvas && !Modernizr.webgl2,
+				yep: "loader!/scripts/jewelwarrior/display.canvas.js",
+			},
+			{
 				load: [
 					"loader!/scripts/jewelwarrior/input.js",
-				    "loader!/scripts/jewelwarrior/display.canvas.js",
 					"loader!/scripts/jewelwarrior/screen.main-menu.js",
 					"loader!/scripts/jewelwarrior/screen.game.js",
 					"loader!/jewelwarrior/images/jewels" + jewel.settings.jewelSize + ".png"
