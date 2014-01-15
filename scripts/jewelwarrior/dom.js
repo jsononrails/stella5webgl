@@ -20,6 +20,7 @@ jewel.dom = (function() {
 	}
 	
 	function bind(element, event, handler) {
+
 		if(typeof element == "string") {
 			element = $(element)[0];
 		}
