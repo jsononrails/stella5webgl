@@ -30,7 +30,7 @@ jewel.board = (function() {
         }
     }
 
-    function initialize(callback) {
+    function initialize(startJewels, callback) {
         settings = jewel.settings;
         rows = settings.rows;
         cols = settings.cols;
@@ -38,7 +38,12 @@ jewel.board = (function() {
         callbacks = [];
         worker = new Worker("/scripts/jewelwarrior/board.worker.js");
         dom.bind(worker, "message", messageHandler);
-        post("initialize", jewel.settings, callback);
+
+		var data = {
+			settings: settings,
+			startJewels: startJewels
+		};
+        post("initialize", data, callback);
     }
 
    

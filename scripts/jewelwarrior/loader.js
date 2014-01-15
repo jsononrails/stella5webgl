@@ -88,6 +88,11 @@ window.addEventListener("load", function() {
 	// loading stage 1
 	Modernizr.load([
 		{
+			test: Modernizr.localstorage,
+			yep: "/scripts/jewelwarrior/storage.js",
+			nope: "/storage/jewelwarrior/storage.cookie.js"
+		},
+		{
 			// these files are always loaded
 			load: [
 				"/scripts/thirdparty/sizzle.min.js",

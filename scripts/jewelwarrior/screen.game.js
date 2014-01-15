@@ -6,7 +6,10 @@ jewel.screens["game-screen"] = (function() {
         dom = jewel.dom,
         $ = dom.$,
         cursor,
-        firstRun = true;
+        firstRun = true,
+		paused = false,
+		pauseTime,
+		storage = jewel.storage;
         
     function startGame() {
         gameState = {
@@ -23,12 +26,31 @@ jewel.screens["game-screen"] = (function() {
         };
         
         updateGameInfo();
-        
-        board.initialize(function() {
+
+        var activeGame = storage.get("activeGameData"),
+			useActiveGame,
+			startJewels;
+		
+		if(activeGame) {
+			useActiveGame = window.confirm("Do you want to continue your previous game?");
+			
+			if(useActiveGame) {
+				gameState.level = activeGame.level;
+				gameState.score = activeGame.score;
+				startJewels = activeGame.jewels;
+			}
+		}
+
+        board.initialize(startJewels, function() {
             display.initialize(function() {
                 display.redraw(board.getBoard(), function() {
                     
-                    advanceLevel();
+					if(useActiveGame) {
+						setLevelTimer(true, activeGame.time);
+						updateGameInfo();
+					} else {
+						advanceLevel();
+					}
                 });
             });
         });
@@ -233,8 +255,52 @@ jewel.screens["game-screen"] = (function() {
         input.bind("moveDown", moveDown);
         input.bind("moveLeft", moveLeft);
         input.bind("moveRight", moveRight);
+		
+		// exit button
+		dom.bind("#game-screen button[name=exit]", "click", function() {
+			togglePause(true);
+			
+			var exitGame = window.confirm("Do you want to return to the main menus?");
+			
+			togglePause(false);
+			if(exitGame) {
+				saveGameData();
+				stopGame();
+				jewel.game.showScreen("main-menu");
+			}
+		});
     }
-    
+
+	function togglePause(enable) {
+		if(enable == paused) return; // no change
+		
+		var overlay = $("#game-screen .pause-overlay")[0];
+		paused = enable;
+		overlay.style.display = paused ? "block" : "none";
+		
+		if(paused) {
+			clearTimeout(gameState.timer);
+			gameState.timer = 0;
+			pauseTime = Date.now();
+		} else {
+			gameState.startTime += Date.now() - pauseTime;
+			setLevelTimer(false);
+		}
+	}
+	
+	function saveGameData() {
+		storage.set("activeGameData", {
+			level: gameState.level,
+			score: gameState.score,
+			time: Date.now() - gameState.startTime,
+			jewels: board.getBoard()
+		});
+	}
+	
+    function stopGame() {
+		clearTimeout(gameState.timer);
+	}
+
     return {
         run : run
     };

@@ -260,13 +260,18 @@ jewel.board = (function() {
     }
     
     
-    function initialize(callback) {
+    function initialize(startJewels, callback) {
         settings = jewel.settings;
         numJewelTypes = settings.numJewelTypes;
         baseScore = settings.baseScore;
         cols = settings.cols;
         rows = settings.rows;
-        fillBoard();
+		if(startJewels) {
+			jewels = startJewels;
+		} else {
+			fillBoard();
+		}
+        
         callback();
     }
    
