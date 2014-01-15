@@ -133,9 +133,14 @@ jewel.screens["game-screen"] = (function() {
     }
 
     function gameOver() {
-        
+        stopGame();
+		storage.set("activeGameData", null);
+		
         display.gameOver(function() {
             announce("Game over");
+			setTimeout(function() {
+				jewel.game.showScreen("hiscore", gameState.score);
+			}, 2500);
         });
     }
     
