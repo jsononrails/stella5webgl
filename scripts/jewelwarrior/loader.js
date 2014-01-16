@@ -144,6 +144,7 @@ window.addEventListener("load", function() {
 			{
 				load: [
 					"loader!/scripts/jewelwarrior/input.js",
+					"loader!/scripts/jewelwarrior/screen.about.js",
 					"loader!/scripts/jewelwarrior/screen.hiscore.js",
 					"loader!/scripts/jewelwarrior/screen.main-menu.js",
 					"loader!/scripts/jewelwarrior/screen.game.js",

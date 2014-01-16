@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
 	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-    <title>Jewel Warrior</title>
+    <title>Jewel Matcher</title>
 
 	<!-- icons -->
 	<link rel="apple-touch-icon-precomposed" href="/jewelwarrior/images/ios-icon.png"/>
@@ -31,7 +31,7 @@
 	<div id="game">
 		<div class="background"></div>
 		<div class="screen" id="splash-screen">
-			<h1 class="logo">Jewel<br />Warrior</h1>
+			<h1 class="logo">Jewel<br />Matcher</h1>
 			
 			<div class="progress">
 				<div class="indicator"></div>
@@ -40,16 +40,16 @@
 			<span class="continue">Click to continue</span>
 		</div>
 		<div class="screen" id="install-screen">
-			<h1 class="logo">Jewel <br />Warrior</h1>
+			<h1 class="logo">Jewel <br />Matcher</h1>
 			<span>Click the <img src="/jewelwarrior/images/install-icon.png" alt="Install icon"> button to install the game to your home screen.</span>
 		</div>
 		<div class="screen" id="main-menu">
-			<h1 class="logo">Jewel <br />Warrior</h1>
+			<h1 class="logo">Jewel <br />Matcher</h1>
 			<ul class="menu">
 				<li><button name="game-screen">Play</button>
 				<li><button name="hiscore">Highscore</button>
-				<li><button name="about">About</button>
-				<li><button name="exit-screen">Exit</button>
+				<li><button name="about-screen">About</button>
+				<li><button name="splash-screen">Exit</button>
 			</ul>
 		</div>
 		
@@ -80,7 +80,14 @@
 				<button name="back">Back</button>
 			</footer>
 		</div>
-		
+		<div class="screen" id="about-screen">
+			<h2 class="logo">About</h2>
+			<p>This is a WebGL/Canvas proof of concept of a bejeweled game</p>
+			<p>Written by:<br /> Jason McBride &copy; 2014</p>
+			<footer>
+				<button name="back">Back</button>
+			</footer>
+		</div>
 		<div id="jewel-proto" class="jewel-size"></div>
 	</div>
 </body>
