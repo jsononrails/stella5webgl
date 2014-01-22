@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- http://games.greggman.com/game/webgl-2d-matrices/ -->
+<head>
+    <title>Stella GL 3D Demo</title>
+    <link media="screen" type="text/css" href="styles/game.css" rel="stylesheet">
+    <!-- vertex shader -->
+    <script id="2d-vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 a_position;
+        attribute vec4 a_color;
+
+        uniform mat4 u_matrix;
+
+        varying vec4 v_color;
+
+        void main() {
+        // Multiply the position by the matrix.
+        gl_Position = u_matrix * a_position;
+
+        // pass the color to the fragment shader
+        v_color = a_color;
+        }
+    </script>
+
+    <!-- fragment shader -->
+    <script id="2d-fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+
+        // passed in from vertex shader
+        varying vec4 v_color;
+
+        void main() {
+        gl_FragColor = v_color;
+        }
+    </script>
+</head>
+<body>
+
+    <canvas id="glCanvas" width="800" height="600"></canvas>
+
+    <script type="text/javascript" src="scripts/gl/glSetup.js"></script>
+    <script type="text/javascript" src="scripts/gl/webgl-utils.js"></script>
+    <script type="text/javascript" src="scripts/math.js"></script>
+    <script type="text/javascript" src="scripts/geometry.js"></script>
+    <script>
+        var glCanvas = document.getElementById("glCanvas");
+
+        // setup gl canvas and context
+        setupGL(glCanvas);
+        window.onload = main;
+
+        // main point of entry
+        function main() {
+            if (gl) {
+                gl.enable(gl.CULL_FACE);
+                gl.enable(gl.DEPTH_TEST);
+
+                gl.clearColor(0.39, 0.58, 0.93, 1.0);                      // Set clear color to black, fully opaque
+                gl.enable(gl.DEPTH_TEST);                               // Enable depth testing
+                gl.depthFunc(gl.LEQUAL);                                // Near things obscure far things
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);      // Clear the color as well as the depth buffer.
+            }
+
+            render();
+        }
+
+        function render() {
+            var translation = [-150, 0, -360];
+            var rotation = [degToRad(190), degToRad(40), degToRad(320)];
+            var scale = [1, 1, 1];
+            var fieldOfViewRadians = degToRad(60);
+
+            // setup GLSL program
+            vertexShader = createShaderFromScriptElement(gl, "2d-vertex-shader");
+            fragmentShader = createShaderFromScriptElement(gl, "2d-fragment-shader");
+            program = createProgram(gl, [vertexShader, fragmentShader]);
+            gl.useProgram(program);
+
+            // look up where the vertex data needs to go.
+            var positionLocation = gl.getAttribLocation(program, "a_position");
+            var colorLocation = gl.getAttribLocation(program, "a_color");
+
+            // compute matrices
+            var translationMatrix = makeTranslation3d(translation[0], translation[1], translation[2]);
+            var rotationXMatrix = makeXRotation(rotation[0]);
+            var rotationYMatrix = makeYRotation(rotation[1]);
+            var rotationZMatrix = makeZRotation(rotation[2]);
+            var scaleMatrix = makeScale3d(scale[0], scale[1], scale[2]);
+
+            // create perpective matrix
+            var aspect = glCanvas.width / glCanvas.height;
+            var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
+
+            // Multiply the matrices.
+            var matrix = matrixMultiply4(scaleMatrix, rotationZMatrix);
+
+            matrix = matrixMultiply4(matrix, rotationYMatrix);
+            matrix = matrixMultiply4(matrix, rotationXMatrix);
+            matrix = matrixMultiply4(matrix, translationMatrix);
+            matrix = matrixMultiply4(matrix, projectionMatrix);
+
+            var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+
+            gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+            // Create a buffer for the position of the rectangle corners.
+            var buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+
+            // Set Geometry.
+            setGeometry(gl);
+
+            // Create a buffer for colors.
+            var buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.enableVertexAttribArray(colorLocation);
+            gl.vertexAttribPointer(colorLocation, 3, gl.UNSIGNED_BYTE, true, 0, 0);
+
+            // set colors
+            setColors(gl);
+
+            // enable blending
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+            // clear buffer bits
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+            // Draw the rectangle.
+            gl.drawArrays(gl.TRIANGLES, 0, 16 * 6);
+
+            gl.disable(gl.BLEND);
+
+        }
+
+        // get random number
+        function randomInt(range) {
+            return Math.floor(Math.random() * range);
+        }
+
+    </script>
+
+</body>
+</html>

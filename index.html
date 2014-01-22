@@ -1,14 +1,94 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en-US">
 <head>
-    <title>Stella Game</title>
-    <link media="screen" type="text/css" href="styles/game.css" rel="stylesheet">
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <title>Jewel Thief</title>
+
+	<!-- icons -->
+	<link rel="apple-touch-icon-precomposed" href="images/ios-icon.png"/>
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ios-icon-ipad.png"/>
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ios-icon-iphone4.png"/>
+	
+	<!-- load screen -->
+	<link rel="apple-touch-startup-image" href="ios-startup-748x1024.png" media="screen and (min-device-width: 768px) and (orientation:landscape)"/>
+	
+	<link rel="apple-touch-startup-image" href="images/ios-startup-768x1004.png" media="screen and (min-device-width: 768px) and (orientation: portrait)"/>
+	
+	<link rel="apple-touch-startup-image" href="images/ios-startup-320-460.png" media="screen and (max-device-width:320px)" />
+	
+	<link rel="stylesheet" href="styles/main.css" />
+	<link rel="stylesheet" href="styles/mobile.css" media="screen
+	and (max-device-width: 768px) and (orientation: portrait),
+	screen and (max-device-width: 1024px) and (orientation: landscape)" />
+	
+	<script src="scripts/thirdparty/modernizr.js"></script>
+	<script src="scripts/loader.js"></script>
 </head>
 <body>
-    <!-- http://germaniumase.online-gids.com/SideScroll05.html -->
+	<div id="game">
+		<div class="background"></div>
+		<div class="screen" id="splash-screen">
+			<h1 class="logo">Jewel<br />Thief</h1>
+			
+			<div class="progress">
+				<div class="indicator"></div>
+			</div>
+			
+			<span class="continue">Click to continue</span>
+		</div>
+		<div class="screen" id="install-screen">
+			<h1 class="logo">Jewel <br />Thief</h1>
+			<span>Click the <img src="images/install-icon.png" alt="Install icon"> button to install the game to your home screen.</span>
+		</div>
+		<div class="screen" id="main-menu">
+			<h1 class="logo">Jewel <br />Thief</h1>
+			<ul class="menu">
+				<li><button name="game-screen">Play</button>
+				<li><button name="hiscore">Highscore</button>
+				<li><button name="about-screen">About</button>
+				<li><button name="splash-screen">Exit</button>
+			</ul>
+		</div>
+		
+		<div class="screen" id="game-screen">
+		            <div class="game-board jewel-size">
+		                <div class="announcement"></div>
+		            </div>
 
-    <canvas id="myCanvas" width="800" height="600"></canvas>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <script type="text/javascript" src="scripts/game/txt.js"></script>
+		            <div class="game-info">
+		                <label class="level">Level: <span></span></label>
+		                <label class="score">Score: <span></span></label>
+		            </div>
+
+		            <div class="time progress"><div class="indicator"></div></div>
+					
+					<footer>
+						<button name="exit">Exit</button>
+					</footer>
+					
+					<div class="pause-overlay"></div>
+		</div>
+		
+		<div class="screen" id="hiscore">
+			<h2 class="logo">High score</h2>
+			<ol class="score-list">
+			</ol>
+			<footer>
+				<button name="back">Back</button>
+			</footer>
+		</div>
+		<div class="screen" id="about-screen">
+			<h2 class="logo">About</h2>
+			<p>This is a WebGL/Canvas proof of concept of a bejeweled game</p>
+			<p>Written by:<br /> Jason McBride &copy; 2014</p>
+			<footer>
+				<button name="back">Back</button>
+			</footer>
+		</div>
+		<div id="jewel-proto" class="jewel-size"></div>
+	</div>
 </body>
 </html>

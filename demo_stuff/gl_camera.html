@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- http://games.greggman.com/game/webgl-2d-matrices/ -->
+<head>
+    <title>Stella GL 3D Camera</title>
+    <link media="screen" type="text/css" href="styles/game.css" rel="stylesheet">
+    <!-- vertex shader -->
+    <script id="2d-vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 a_position;
+        attribute vec4 a_color;
+
+        uniform mat4 u_matrix;
+
+        varying vec4 v_color;
+
+        void main() {
+        // Multiply the position by the matrix.
+        gl_Position = u_matrix * a_position;
+
+        // pass the color to the fragment shader
+        v_color = a_color;
+        }
+    </script>
+
+    <!-- fragment shader -->
+    <script id="2d-fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+
+        // passed in from vertex shader
+        varying vec4 v_color;
+
+        void main() {
+        gl_FragColor = v_color;
+        }
+    </script>
+</head>
+<body>
+
+    <canvas id="glCanvas" width="800" height="600"></canvas>
+
+    <script type="text/javascript" src="scripts/gl/glSetup.js"></script>
+    <script type="text/javascript" src="scripts/gl/webgl-utils.js"></script>
+    <script type="text/javascript" src="scripts/math.js"></script>
+    <script type="text/javascript" src="scripts/geometry.js"></script>
+    <script>
+        var glCanvas = document.getElementById("glCanvas");
+
+        // setup gl canvas and context
+        setupGL(glCanvas);
+        window.onload = main;
+
+        // main point of entry
+        function main() {
+            if (!gl) {
+                return;
+            }
+
+            gl.enable(gl.CULL_FACE);
+            gl.enable(gl.DEPTH_TEST);                               // Enable depth testing
+            gl.depthFunc(gl.LEQUAL);
+
+            gl.clearColor(0.39, 0.58, 0.93, 1.0);   // cornflower blue
+
+            // setup GLSL program
+            vertexShader = createShaderFromScriptElement(gl, "2d-vertex-shader");
+            fragmentShader = createShaderFromScriptElement(gl, "2d-fragment-shader");
+            program = createProgram(gl, [vertexShader, fragmentShader]);
+            gl.useProgram(program);
+
+            // look up where the vertex data needs to go.
+            var positionLocation = gl.getAttribLocation(program, "a_position");
+            var colorLocation = gl.getAttribLocation(program, "a_color");
+
+            // lookup uniforms
+            var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+
+            // Create a buffer for the position of the rectangle corners.
+            var buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+
+            // Set Geometry.
+            setGeometry3d(gl);
+
+            // Create a buffer for colors.
+            var buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.enableVertexAttribArray(colorLocation);
+            gl.vertexAttribPointer(colorLocation, 3, gl.UNSIGNED_BYTE, true, 0, 0);
+
+            // set colors
+            setColors(gl);
+
+            var cameraAngleRadians = degToRad(75);
+            var fieldOfViewRadians = degToRad(60);
+
+            drawScene();
+
+            function drawScene() {
+                var numFs = 5;
+                var radius = 200;
+
+                // clear buffer bits
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+                // compute the projection matrix
+                var aspect = glCanvas.width / glCanvas.height;
+                var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
+
+                // compute position of the first F
+                var fPosition = [radius, 0, 0];
+
+                // compute the camera's matrix
+                var cameraMatrix = makeTranslation3d(0, 50, radius * 1.5);
+                cameraMatrix = matrixMultiply4(cameraMatrix, makeYRotation(cameraAngleRadians));
+
+                // get the camera's position from the matrix we computed
+                cameraPosition = [
+                    cameraMatrix[12],
+                    cameraMatrix[13],
+                    cameraMatrix[14],
+                ];
+
+                var up = [0, 1, 0];
+                
+                // compute the camera's matrix using look at
+                var cameraMatrix = makeLookAt(cameraPosition, fPosition, up);
+
+                // make a view matrix from the camera matrix
+                var viewMatrix = makeInverse(cameraMatrix);
+
+                // draw F's on in a circle
+                for (var ii = 0; ii < numFs; ++ii) {
+                    var angle = ii * Math.PI * 2 / numFs;
+
+                    var x = Math.cos(angle) * radius;
+                    var z = Math.sin(angle) * radius;
+
+                    var translationMatrix = makeTranslation3d(x, 0, z);
+
+                    // multiply the matrices
+                    var matrix = translationMatrix;
+                    matrix = matrixMultiply4(matrix, viewMatrix);
+                    matrix = matrixMultiply4(matrix, projectionMatrix);
+
+                    // set the matrix
+                    gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+                    // enable blending
+                    gl.enable(gl.BLEND);
+                    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+                    // draw the geometry
+                    gl.drawArrays(gl.TRIANGLES, 0, 16 * 6);
+
+                    gl.disable(gl.BLEND);
+                }
+            }
+
+            // get random number
+            function randomInt(range) {
+                return Math.floor(Math.random() * range);
+            }
+        }
+
+
+
+    </script>
+
+</body>
+</html>
