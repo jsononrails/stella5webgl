@@ -1,65 +1,42 @@
 @font-face {
-	font-family: "Frijole";
+	font-family: "Slackey";
 	font-weight: normal;
 	font-style: normal;
-	src: url("/fonts/Frijole-Regular.ttf") format("truetype"); /*Frijole-Regular.ttf Piedra-Regular.ttf*/
+	src: url("/fonts/slackey.woff") format("woff"),
+		 url("/fonts/slackey.ttf") format("truetype");
 }
 
 @font-face {
-	font-family: "Piedra";
+	font-family: "Geo";
 	font-weight: normal;
 	font-style: normal;
-	src: url("/fonts/Piedra-Regular.ttf") format("truetype");
+	src: url("/fonts/geo.woff") format("woff"),
+		 url("/fonts/geo.ttf") format("truetype");
 }
 
 body {
     margin : 0;
-	padding: 0;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-text-size-adjust: none;
     -webkit-user-select : none;
-	background: #000;
+	background: #1E1E1E;
 }
 
 #game {
-	margin-top:0.5em;
-	margin-bottom:0;
     position : absolute;
-    left : 50%;
+    left : 0;
     top : 0;
-    font-size : 64px;
+    font-size : 40px;
     width : 8em;
-    height : 11em;
-    /* Note: This gradient may render differently in browsers that don't support the unprefixed gradient syntax */
-
-	/* IE10 Consumer Preview */ 
-	background-image: -ms-linear-gradient(top left, #FFFFFF 0%, #00A3EF 100%);
-
-	/* Mozilla Firefox */ 
-	background-image: -moz-linear-gradient(top left, #FFFFFF 0%, #00A3EF 100%);
-
-	/* Opera */ 
-	background-image: -o-linear-gradient(top left, #FFFFFF 0%, #00A3EF 100%);
-
-	/* Webkit (Safari/Chrome 10) */ 
-	background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0, #FFFFFF), color-stop(1, #00A3EF));
-
-	/* Webkit (Chrome 11+) */ 
-	background-image: -webkit-linear-gradient(top left, #FFFFFF 0%, #00A3EF 100%);
-
-	/* W3C Markup, IE10 Release Preview */ 
-	background-image: linear-gradient(to bottom right, #FFFFFF 0%, #00A3EF 100%);
-    font-family : Piedra;
-    color : rgb(255,255,255);
-	margin-left:-20%;
-	text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
-                  0.10em  0.15em  0.15em rgb(0,0,0);
+    height : 12em;
+    background-color : rgb(30,30,30);
+    font-family : Geo;
+    color : rgb(200,200,100);
 }
 
 .jewel-size {
-    font-size : 64px;
+    font-size : 40px;
 }
 
 #jewel-proto {
@@ -73,7 +50,7 @@ body {
 #game .screen {
     position : absolute;
     width : 100%;
-
+    height : 100%;
     display : none;
     z-index : 10;
 }
@@ -93,14 +70,14 @@ body {
     display : none;
 }
 .logo {
-    font-family : Frijole;
+    font-family : Slackey;
     margin : 0;
     text-align : center;
-    color : rgba(255,255,255,1);
-    font-size : 1.25em;
+    color : rgb(70,120,20);
+    font-size : 1.5em;
     line-height : 0.9em;
-    text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
+    text-shadow : 0.03em  0.03em  0.03em rgb(255,255,0),
+                 -0.03em -0.03em  0.03em rgb(255,255,0),
                   0.10em  0.15em  0.15em rgb(0,0,0);
 }
 
@@ -111,7 +88,7 @@ body {
 
 /* Main menu styles */
 #main-menu {
-    padding-top : 0.5em;
+    padding-top : 1em;
 }
 
 ul.menu {
@@ -122,33 +99,30 @@ ul.menu {
 }
 
 ul.menu li {
-    margin : 0.5em 0;
+    margin : 0.8em 0;
 }
 
 ul.menu li button {
-    font-family : Frijole, sans-serif;
+    font-family : Slackey, sans-serif;
     font-size : 0.6em;
+    color : rgb(100,120,0);
     width : 10em;
     height : 1.5em;
-    color : rgb(255,255,255);
-	background : rgb(93,156,252);
-    border : 0.1em solid rgb(255,255,255);
+    background : rgb(10,20,0);
+    border : 0.1em solid rgb(255,255,0);
     border-radius : 0.5em;
     -webkit-box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
     -moz-box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
     box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
-	text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
-                  0.10em  0.15em  0.15em rgb(0,0,0);
 }
 
 ul.menu li button:hover {
-    background : rgb(3,77,129);
+    background : rgb(30,40,0);
 }
 
 ul.menu li button:active {
-    color : rgb(255,255,255);
-    background : rgb(3,77,129);
+    color : rgb(255,255,0);
+    background : rgb(30,40,0);
 }
 
 /* Install screen for iOS devices */
@@ -165,23 +139,16 @@ ul.menu li button:active {
 
 /* Progress bar */
 .progress {
-    margin : 0.25em auto;
+    margin : 0 auto;
     width : 6em;
     height : 0.5em;
     border-radius : 0.5em;
     overflow : hidden;
-   	border : 0.1em solid rgb(255,255,255);
-    border-radius : 0.5em;
-    -webkit-box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
-    -moz-box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
-    box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
-	text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
-                  0.10em  0.15em  0.15em rgb(0,0,0);
+    border : 1px solid rgb(200,200,100);
 }
 
 .progress .indicator {
-	background : rgb(98,1,19);
+    background-color : rgb(200,200,100);
     height : 100%;
     width : 0%;
 }
@@ -248,7 +215,6 @@ ul.menu li button:active {
 
 /* Game screen - Game state */
 #game-screen .game-info {
-	padding-top:0.13em;
     width : 100%;
     float : left;
 }
@@ -272,43 +238,27 @@ ul.menu li button:active {
 
 #game-screen .time .indicator {
     width : 100%;
-	background-color : rgb(98,1,19);
+	background-color : rgb(200,200,100);
 }
 
 /* game screen footer */
 #game-screen footer {
 	display:block;
 	position: absolute;
-	bottom: -0.85em;
+	bottom: 0;
 	height: 1.25em;
-	text-align:center;
 	width: 100%;
 }
 
 .screen footer button {
 	margin-left: 0.25em;
 	padding: 0 0.75em;
-	font-family: Piedra, sans-serif;
+	font-family: Geo, sans-serif;
 	font-size: 0.5em;
-	color : rgb(255,255,255);
-	background : rgb(93,156,252);
-    border : 0.1em solid rgb(255,255,255);
-    border-radius : 0.5em;
-    -webkit-box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
-    -moz-box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
-    box-shadow : 0.2em 0.2em 0.3em rgb(0,0,0);
-	text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
-                  0.10em  0.15em  0.15em rgb(0,0,0);
-}
-
-.screen footer button:hover {
-    background : rgb(3,77,129);
-}
-
-.screen footer button:active {
-    color : rgb(255,255,255);
-    background : rgb(3,77,129);
+	color: rgba(200, 200, 100, 0.5);
+	background: rgb(10, 20, 0);
+	border: 1px solid rgba(200, 200, 100, 0.5);
+	border-radius: 0.2em;
 }
 
 /* game screen pause overlay */
@@ -331,7 +281,7 @@ ul.menu li button:active {
 
 /* game high score */
 #about-screen h2 {
-	margin-top: 0.5em;
+	margin-top: 1.25em;
 	font-size: 1.25em;
 }
 
@@ -339,18 +289,12 @@ ul.menu li button:active {
 	font-size: 0.65em;
 	width: 75%;
 	margin: 10% 10%;
-	text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
-                  0.10em  0.15em  0.15em rgb(0,0,0);
 }
 
 #hiscore ol.score-list {
-	font-size: 0.52em;
+	font-size: 0.65em;
 	width: 75%;
 	margin: 0 10%;
-	text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
-                  0.10em  0.15em  0.15em rgb(0,0,0);
 }
 
 #hiscore ol.score-list li {
@@ -376,11 +320,11 @@ ul.menu li button:active {
     margin-top : -0.5em;
     width : 100%;
 
-    font-family : Frijole, sans-serif;
-    color : rgb(255,255,255);
-    text-shadow : 0.03em  0.03em  0.03em rgb(0,150,255),
-                 -0.03em -0.03em  0.03em rgb(0,150,255),
-                  0.10em  0.15em  0.15em rgb(0,0,0);
+    font-family : Slackey, sans-serif;
+    color : rgb(150,150,75);
+    text-shadow : 0.03em 0.03em 0.03em rgb(255,255,0),
+                 -0.03em -0.03em 0.03em rgb(255,255,0),
+                  0.1em 0.15em 0.15em rgb(0,0,0);
     text-align : center;
     white-space : nowrap;
 
@@ -429,44 +373,6 @@ ul.menu li button:active {
     -webkit-animation-duration : 2s;
     -moz-animation-name : zoomfade;
     -moz-animation-duration : 2s;
-}
-
-/* pulse effect*/
-@-webkit-keyframes pulse_animation {
-	0% { -webkit-transform: scale(1); }
-	30% { -webkit-transform: scale(1); }
-	40% { -webkit-transform: scale(1.08); }
-	50% { -webkit-transform: scale(1); }
-	60% { -webkit-transform: scale(1); }
-	70% { -webkit-transform: scale(1.05); }
-	80% { -webkit-transform: scale(1); }
-	100% { -webkit-transform: scale(1); }
-}
-
-@-moz-keyframes pulse_animation {
-	0% { -moz-transform: scale(1); }
-	30% { -moz-transform: scale(1); }
-	40% { -moz-transform: scale(1.08); }
-	50% { -moz-transform: scale(1); }
-	60% { -moz-transform: scale(1); }
-	70% { -moz-transform: scale(1.05); }
-	80% { -moz-transform: scale(1); }
-	100% { -moz-transform: scale(1); }
-}
-
-
-.pulse {
-	-webkit-animation-name: 'pulse_animation';
-	-webkit-animation-duration: 5000ms;
-	-webkit-transform-origin:70% 70%;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-timing-function: linear;
-	
-	-moz-animation-name: 'pulse_animation';
-	-moz-animation-duration: 5000ms;
-	-moz-transform-origin:70% 70%;
-	-moz-animation-iteration-count: infinite;
-	-moz-animation-timing-function: linear;
 }
 
 /* Fallback for browsers without CSS animations */

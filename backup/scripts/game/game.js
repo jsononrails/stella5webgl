@@ -17,7 +17,7 @@ jewel.game = (function() {
 			}, 0);
 		}
 		
-		//createBackground();
+		createBackground();
 	}
 	
 	// hide the active screen (if any) and show the screen
@@ -53,7 +53,7 @@ jewel.game = (function() {
 			rect = background.getBoundingClientRect(),
 			gradient,
 			i;
-		console.log(rect);
+		
 		canvas.width = rect.width;
 		canvas.height = rect.height;
 		
@@ -64,13 +64,13 @@ jewel.game = (function() {
 			0.25, 0.15, 1
 		);
 		
-		gradient.addColorStop(0, "rgb(255, 255, 255)");
-		gradient.addColorStop(1, "rgb(0, 65, 242)");
+		gradient.addColorStop(0, "rgb(55, 65, 50)");
+		gradient.addColorStop(1, "rgb(0, 0, 0)");
 		ctx.fillStyle = gradient;
 		ctx.fillRect(0, 0, 1, 1);
 		
-		ctx.strokeStyle = "rgba(0, 65, 242, 0, 0.2)";
-		ctx.strokeStyle = "rgba(0, 65, 242, 0.2)";
+		ctx.strokeStyle = "rgba(255, 255, 255, 0, 0.2)";
+		ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
 		ctx.lineWidth = 0.008;
 		ctx.beginPath();
 		

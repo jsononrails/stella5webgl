@@ -18,7 +18,7 @@ jewel.display = (function() {
         background.width = cols * jewelSize;
         background.height = rows * jewelSize;
 
-        bgctx.fillStyle = "rgba(0,73,104,0.25)";
+        bgctx.fillStyle = "rgba(225,235,255,0.15)";
         for (var x=0;x<cols;x++) {
             for (var y=0;y<cols;y++) {
                 if ((x+y) % 2) {
