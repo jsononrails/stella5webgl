@@ -17,7 +17,9 @@ var jewel = {
 			KEY_RIGHT: "moveRight",
 			KEY_ENTER: "selectJewel",
 			CLICK: "selectJewel",
-			TOUCH: "selectJewel"
+			TOUCH: "selectJewel",
+			TOUCHMOVE: "moveJewel",
+			ENDTOUCHMOVE: "endMoveJewel"
 		}
 	}
 };

@@ -11,7 +11,15 @@ jewel.screens["game-screen"] = (function() {
         firstRun = true,
 		paused = false,
 		pauseTime,
-		storage = jewel.storage;
+		storage = jewel.storage,
+		jewelTouch = {
+			startTouchX: 0,
+			startTouchY: 0,
+			touchX: 0,
+			touchY: 0,
+			newTouchX: 0,
+			newTouchY: 0
+		}
         
     function startGame() {
         gameState = {
@@ -167,7 +175,62 @@ jewel.screens["game-screen"] = (function() {
         display.setCursor(x, y, select);
     }
 
+	function moveJewel(x, y) {
+		jewelTouch.touchX = x;
+		jewelTouch.touchY = y;
+	}
+	
+	function endMoveJewel() {
+		
+		// check move Y
+		if (jewelTouch.startTouchX == jewelTouch.touchX && jewelTouch.startTouchY != jewelTouch.touchY)
+		{
+			 // selected an adjacent jewel	
+				if(jewelTouch.touchY > jewelTouch.startTouchY) {
+					jewelTouch.newTouchY = (jewelTouch.startTouchY + 1);
+				} else if(jewelTouch.touchY < jewelTouch.startTouchY) {
+					jewelTouch.newTouchY = (jewelTouch.startTouchY - 1);
+				}
+			
+	            board.swap(jewelTouch.touchX, jewelTouch.newTouchY, 
+	                jewelTouch.startTouchX, jewelTouch.startTouchY, playBoardEvents);
+	
+		} else if(jewelTouch.startTouchX != jewelTouch.touchX && jewelTouch.startTouchY == jewelTouch.touchY) {
+			
+			// selected an adjacent jewel	
+				if(jewelTouch.touchX > jewelTouch.startTouchX) {
+					jewelTouch.newTouchX = (jewelTouch.startTouchX + 1);
+				} else if(jewelTouch.touchX < jewelTouch.startTouchX) {
+					jewelTouch.newTouchX = (jewelTouch.startTouchX - 1);
+				}
+			
+	            board.swap(jewelTouch.newTouchX, jewelTouch.touchY, 
+	                jewelTouch.startTouchX, jewelTouch.startTouchY, playBoardEvents);
+		} else {
+			 // selected a different jewel
+	            setCursor(touchX, touchY, true);
+		}
+		
+		
+       /* if (dist == 0) {
+            // deselected the selected jewel
+            setCursor(touchX, touchY, false);
+        } else if (dist == 1) {
+            // selected an adjacent jewel
+            board.swap(cursor.x, cursor.y, 
+                touchX, touchY, playBoardEvents);
+            setCursor(touchX, touchY, false);
+        } else {
+            // selected a different jewel
+            setCursor(touchX, touchY, true);
+        }*/
+	}
+	
     function selectJewel(x, y) {
+		
+		jewelTouch.startTouchX = x;
+		jewelTouch.startTouchY = y;
+		
         if (arguments.length == 0) {
             selectJewel(cursor.x, cursor.y);
             return;
@@ -264,6 +327,8 @@ jewel.screens["game-screen"] = (function() {
     function setup() {
         input.initialize();
         input.bind("selectJewel", selectJewel);
+		input.bind("moveJewel", moveJewel);
+		input.bind("endMoveJewel", endMoveJewel);
         input.bind("moveUp", moveUp);
         input.bind("moveDown", moveDown);
         input.bind("moveLeft", moveLeft);

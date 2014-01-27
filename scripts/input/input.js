@@ -37,6 +37,14 @@ jewel.input = (function() {
 			handleClick(event, "TOUCH", event.targetTouches[0]);
 		});
 		
+		dom.bind(board, "touchmove", function(event) {
+			handleMove(event, "TOUCHMOVE", event.targetTouches[0]);
+		});
+		
+		dom.bind(board, "touchend", function(event) {
+			handleEndMove(event, "ENDTOUCHMOVE", event.targetTouches[0]);
+		});
+		
 		// keys
 		dom.bind(document, "keydown", function(event) {
 			var keyName = keys[event.keyCode];
@@ -48,6 +56,48 @@ jewel.input = (function() {
 		});
 	}
 	
+	function handleMove(event, control, touches) {
+
+		// is any action bound to this input control?
+		var action = settings.controls[control];
+		
+		if(!action) {
+			return;
+		}
+		
+		var board = $("#game-screen .game-board")[0],
+			rect = board.getBoundingClientRect(),
+			relX, relY,
+			jewelX, jewelY;
+			
+		relX = touches.clientX - rect.left;
+		relY = touches.clientY - rect.top;
+		
+		// jewel coordinates
+		jewelX = Math.floor(relX / rect.width * settings.cols);
+		jewelY = Math.floor(relY / rect.height * settings.rows);
+		
+		// trigger functions bound to action
+		trigger(action, jewelX, jewelY);
+		
+		// prevent default behaviour
+		event.preventDefault();
+	}
+	
+	function handleEndMove(event, control, touches) {
+		// is any action bound to this input control?
+		var action = settings.controls[control];
+		
+		if(!action) {
+			return;
+		}
+		
+		// trigger functions bound to action
+		trigger(action);
+		
+		// prevent default behaviour
+		event.preventDefault();
+	}
 	
 	function handleClick(event, control, click) {
 		// is any action bound to this input control?
