@@ -206,24 +206,7 @@ jewel.screens["game-screen"] = (function() {
 			
 	            board.swap(jewelTouch.newTouchX, jewelTouch.touchY, 
 	                jewelTouch.startTouchX, jewelTouch.startTouchY, playBoardEvents);
-		} else {
-			 // selected a different jewel
-	            setCursor(touchX, touchY, true);
-		}
-		
-		
-       /* if (dist == 0) {
-            // deselected the selected jewel
-            setCursor(touchX, touchY, false);
-        } else if (dist == 1) {
-            // selected an adjacent jewel
-            board.swap(cursor.x, cursor.y, 
-                touchX, touchY, playBoardEvents);
-            setCursor(touchX, touchY, false);
-        } else {
-            // selected a different jewel
-            setCursor(touchX, touchY, true);
-        }*/
+		} 
 	}
 	
     function selectJewel(x, y) {

@@ -186,14 +186,6 @@ jewel.display = (function() {
             drawJewel(jewels[x][y], x, y);
             ctx.restore();
         }
-        ctx.save();
-        ctx.lineWidth = 0.05 * jewelSize;
-        ctx.strokeStyle = "rgba(250,250,150,0.8)";
-        ctx.strokeRect(
-            (x + 0.05) * jewelSize, (y + 0.05) * jewelSize,
-            0.9 * jewelSize, 0.9 * jewelSize
-        );
-        ctx.restore();
     }
 
     function setCursor(x, y, selected) {
@@ -233,7 +225,7 @@ jewel.display = (function() {
                 },
                 done : function() {
                     if (--n == 0) {
-                        cursor = oldCursor;
+                        cursor = cursor;
                         callback();
                     }
                 }
@@ -386,16 +378,11 @@ jewel.display = (function() {
         if (cursor.selected) {
             ctx.save();
             ctx.globalCompositeOperation = "lighter";
-            ctx.globalAlpha = 0.8 * t1;
-            drawJewel(jewels[x][y], x, y);
+            ctx.globalAlpha = 0.8 * t1;	
+			clearJewel(x, y);
+            drawJewel(jewels[x][y], x, y, t1, t2);
             ctx.restore();
         }
-        ctx.save();
-        ctx.lineWidth = 0.05;
-        ctx.strokeStyle =
-            "rgba(250,250,150," + (0.5 + 0.5 * t2) + ")";
-        ctx.strokeRect(x+0.05,y+0.05,0.9,0.9);
-        ctx.restore();
     }
 
     function cycle() {
