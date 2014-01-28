@@ -18,7 +18,8 @@ jewel.screens["game-screen"] = (function() {
 			touchX: 0,
 			touchY: 0,
 			newTouchX: 0,
-			newTouchY: 0
+			newTouchY: 0,
+			moved: false
 		}
         
     function startGame() {
@@ -80,7 +81,7 @@ jewel.screens["game-screen"] = (function() {
             dom.addClass(element, "active");
             setTimeout(function() {
                 dom.removeClass(element, "active");
-            }, 1000);
+            }, 2000);
         }
     }
     
@@ -92,7 +93,7 @@ jewel.screens["game-screen"] = (function() {
     }
     
     function advanceLevel() {
-		audio.play("levelup");
+		//audio.play("levelup");
 		
         gameState.level++;
         announce("Level " + gameState.level);
@@ -103,7 +104,7 @@ jewel.screens["game-screen"] = (function() {
         gameState.endTime = settings.baseLevelTimer *
             Math.pow(gameState.level, -0.05 * gameState.level);
         setLevelTimer(true);
-        display.levelUp();
+        display.levelUp();  // there is a bug here
     }
 
     
@@ -147,7 +148,7 @@ jewel.screens["game-screen"] = (function() {
     }
 
     function gameOver() {
-		audio.play("gameover");
+		//audio.play("gameover");
 		
         stopGame();
 		storage.set("activeGameData", null);
@@ -178,35 +179,45 @@ jewel.screens["game-screen"] = (function() {
 	function moveJewel(x, y) {
 		jewelTouch.touchX = x;
 		jewelTouch.touchY = y;
+		jewelTouch.moved = true;
 	}
 	
 	function endMoveJewel() {
 		
-		// check move Y
-		if (jewelTouch.startTouchX == jewelTouch.touchX && jewelTouch.startTouchY != jewelTouch.touchY)
-		{
-			 // selected an adjacent jewel	
-				if(jewelTouch.touchY > jewelTouch.startTouchY) {
-					jewelTouch.newTouchY = (jewelTouch.startTouchY + 1);
-				} else if(jewelTouch.touchY < jewelTouch.startTouchY) {
-					jewelTouch.newTouchY = (jewelTouch.startTouchY - 1);
-				}
+		if(jewelTouch.moved) {
+			// check move Y
+			if (jewelTouch.startTouchX == jewelTouch.touchX && jewelTouch.startTouchY != jewelTouch.touchY)
+			{
+				 // selected an adjacent jewel	
+					if(jewelTouch.touchY > jewelTouch.startTouchY) {
+						jewelTouch.newTouchY = (jewelTouch.startTouchY + 1);
+					} else if(jewelTouch.touchY < jewelTouch.startTouchY) {
+						jewelTouch.newTouchY = (jewelTouch.startTouchY - 1);
+					}
 			
-	            board.swap(jewelTouch.touchX, jewelTouch.newTouchY, 
-	                jewelTouch.startTouchX, jewelTouch.startTouchY, playBoardEvents);
+		            board.swap(jewelTouch.touchX, jewelTouch.newTouchY, jewelTouch.startTouchX, jewelTouch.startTouchY, playBoardEvents);
 	
-		} else if(jewelTouch.startTouchX != jewelTouch.touchX && jewelTouch.startTouchY == jewelTouch.touchY) {
+			} else if(jewelTouch.startTouchX != jewelTouch.touchX && jewelTouch.startTouchY == jewelTouch.touchY) {
 			
-			// selected an adjacent jewel	
-				if(jewelTouch.touchX > jewelTouch.startTouchX) {
-					jewelTouch.newTouchX = (jewelTouch.startTouchX + 1);
-				} else if(jewelTouch.touchX < jewelTouch.startTouchX) {
-					jewelTouch.newTouchX = (jewelTouch.startTouchX - 1);
-				}
+				// selected an adjacent jewel	
+					if(jewelTouch.touchX > jewelTouch.startTouchX) {
+						jewelTouch.newTouchX = (jewelTouch.startTouchX + 1);
+					} else if(jewelTouch.touchX < jewelTouch.startTouchX) {
+						jewelTouch.newTouchX = (jewelTouch.startTouchX - 1);
+					}
 			
-	            board.swap(jewelTouch.newTouchX, jewelTouch.touchY, 
-	                jewelTouch.startTouchX, jewelTouch.startTouchY, playBoardEvents);
-		} 
+		            board.swap(jewelTouch.newTouchX, jewelTouch.touchY, jewelTouch.startTouchX, jewelTouch.startTouchY, playBoardEvents);
+			}
+			
+			// reset touch
+			jewelTouch.startTouchX = 0
+			jewelTouch.startTouchY = 0;
+			jewelTouch.touchX = 0;
+			jewelTouch.touchY = 0;
+			jewelTouch.newTouchX = 0;
+			jewelTouch.newTouchY = 0;
+			jewelTouch.moved = false;
+		}
 	}
 	
     function selectJewel(x, y) {
@@ -214,30 +225,32 @@ jewel.screens["game-screen"] = (function() {
 		jewelTouch.startTouchX = x;
 		jewelTouch.startTouchY = y;
 		
-        if (arguments.length == 0) {
-            selectJewel(cursor.x, cursor.y);
-            return;
-        }
-        if (cursor.selected) {
-            var dx = Math.abs(x - cursor.x),
-                dy = Math.abs(y - cursor.y),
-                dist = dx + dy;
+		if(!jewelTouch.moved) {
+        	if (arguments.length == 0) {
+	            selectJewel(cursor.x, cursor.y);
+	            return;
+	        }
+	        if (cursor.selected) {
+	            var dx = Math.abs(x - cursor.x),
+	                dy = Math.abs(y - cursor.y),
+	                dist = dx + dy;
 
-            if (dist == 0) {
-                // deselected the selected jewel
-                setCursor(x, y, false);
-            } else if (dist == 1) {
-                // selected an adjacent jewel
-                board.swap(cursor.x, cursor.y, 
-                    x, y, playBoardEvents);
-                setCursor(x, y, false);
-            } else {
-                // selected a different jewel
-                setCursor(x, y, true);
-            }
-        } else {
-            setCursor(x, y, true);
-        }
+	            if (dist == 0) {
+	                // deselected the selected jewel
+	                setCursor(x, y, false);
+	            } else if (dist == 1) {
+	                // selected an adjacent jewel
+	                board.swap(cursor.x, cursor.y, 
+	                    x, y, playBoardEvents);
+	                setCursor(x, y, false);
+	            } else {
+	                // selected a different jewel
+	                setCursor(x, y, true);
+	            }
+	        } else {
+	            setCursor(x, y, true);
+	        }
+		}
     }
 
     function playBoardEvents(events) {
@@ -251,7 +264,7 @@ jewel.screens["game-screen"] = (function() {
                     display.moveJewels(boardEvent.data, next);
                     break;
                 case "remove" :
-                    audio.play("match");
+                    //audio.play("match");
                     display.removeJewels(boardEvent.data, next);
                     break;
                 case "refill" :
@@ -263,7 +276,7 @@ jewel.screens["game-screen"] = (function() {
                     next();
                     break;
                 case "badswap" :
-                    audio.play("badswap");
+                    //audio.play("badswap");
                     break;
                 default :
                     next();
