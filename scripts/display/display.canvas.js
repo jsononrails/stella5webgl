@@ -184,8 +184,9 @@ jewel.display = (function() {
 
         var x = cursor.x,
             y = cursor.y;
-
+		
         clearCursor(function callback() {
+
 			if (cursor.selected) {
 	            ctx.save();
 	            ctx.globalCompositeOperation = "lighter";
@@ -206,16 +207,13 @@ jewel.display = (function() {
     }
 
     function setCursor(x, y, selected) {
+		
         clearCursor(function callback() {
-			if (arguments.length > 0) {
-	            cursor = {
-	                x : x,
-	                y : y,
-	                selected : selected
-	            };
-	        } else {
-	            cursor = null;
-	        }
+			cursor = {
+                x : x,
+                y : y,
+                selected : selected
+            };
 	        renderCursor();
 		});
     }
